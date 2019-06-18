@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace Rodjenihm.Lib.MojBroj
 {
-    internal sealed class RpnPatterns : IRpnPatterns
+    internal static class RpnPatterns
     {
-        private bool IsValidRpnPattern(int[] pattern)
+        private static bool IsValidRpnPattern(int[] pattern)
         {
             int stackCount = 0;
 
@@ -25,7 +25,7 @@ namespace Rodjenihm.Lib.MojBroj
             return stackCount == 1;
         }
 
-        public IEnumerable<int[]> CreateRpnPatternsForDigitCount(int count)
+        public static IEnumerable<int[]> CreateRpnPatternsForDigitCount(int count)
         {
             var based = new int[2 * count - 1];
 
