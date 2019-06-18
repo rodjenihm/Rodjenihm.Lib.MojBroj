@@ -4,9 +4,23 @@ using System.Linq;
 
 namespace Rodjenihm.Lib.MojBroj
 {
-    internal static class RpnPatterns
+    internal sealed class RpnMap : IRpnMap
     {
-        private static bool IsValidRpnPattern(int[] pattern)
+        public List<IEnumerable<int[]>> Patterns { get; private set; }
+
+        public RpnMap()
+        {
+            Patterns = new List<IEnumerable<int[]>>(5);
+            InitializeRpnMap();
+        }
+
+        private void InitializeRpnMap()
+        {
+            for (int i = 2; i <= 6; i++)
+                Patterns.Add(CreateRpnPatternsForDigitCount(i));
+        }
+
+        private bool IsValidRpnPattern(int[] pattern)
         {
             int stackCount = 0;
 
@@ -25,7 +39,7 @@ namespace Rodjenihm.Lib.MojBroj
             return stackCount == 1;
         }
 
-        public static IEnumerable<int[]> CreateRpnPatternsForDigitCount(int count)
+        private IEnumerable<int[]> CreateRpnPatternsForDigitCount(int count)
         {
             var based = new int[2 * count - 1];
 
