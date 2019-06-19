@@ -1,4 +1,5 @@
 ﻿using Rodjenihm.Lib.Combinatorics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +13,17 @@ namespace Rodjenihm.Lib.MojBroj
         {
             Patterns = new List<IEnumerable<int[]>>(maxDigitCount - 1);
             InitializeRpnMap(maxDigitCount);
+        }
+
+        public IEnumerable<int[]> this[int i]
+        {
+            get
+            {
+                if (i - 2 > Patterns.Capacity && i - 2 < 0)
+                    throw new IndexOutOfRangeException($"RpnMap indexer has to be in 2..{Patterns.Capacity + 1} range");
+
+                return Patterns[i - 2];
+            }
         }
 
         private void InitializeRpnMap(int maxDigitCount)
