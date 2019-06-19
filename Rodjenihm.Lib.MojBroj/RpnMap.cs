@@ -8,15 +8,15 @@ namespace Rodjenihm.Lib.MojBroj
     {
         public List<IEnumerable<int[]>> Patterns { get; private set; }
 
-        public RpnMap()
+        public RpnMap(int maxDigitCount)
         {
-            Patterns = new List<IEnumerable<int[]>>(5);
-            InitializeRpnMap();
+            Patterns = new List<IEnumerable<int[]>>(maxDigitCount - 1);
+            InitializeRpnMap(maxDigitCount);
         }
 
-        private void InitializeRpnMap()
+        private void InitializeRpnMap(int maxDigitCount)
         {
-            for (int i = 2; i <= 6; i++)
+            for (int i = 2; i <= maxDigitCount; i++)
                 Patterns.Add(CreateRpnPatternsForDigitCount(i));
         }
 
@@ -46,7 +46,7 @@ namespace Rodjenihm.Lib.MojBroj
             for (int i = 0; i < based.Length; i++)
                 based[i] = i < count ? 1 : 0;
 
-            foreach (var pattern in new Permutations<int>(based, 2, based.Length - 1))
+            foreach (var pattern in new Permutations<int>(based, start: 2, end: based.Length - 1))
             {
                 if (IsValidRpnPattern(pattern.ToArray()))
                     yield return pattern.ToArray();
