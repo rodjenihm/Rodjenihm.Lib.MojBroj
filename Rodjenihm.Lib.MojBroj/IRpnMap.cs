@@ -2,7 +2,7 @@
 
 namespace Rodjenihm.Lib.MojBroj
 {
-    internal interface IRpnMap
+    public interface IRpnMap
     {
         List<IEnumerable<int[]>> Patterns { get; }
         int Size { get; }

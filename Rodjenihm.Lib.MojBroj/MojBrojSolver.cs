@@ -1,7 +1,6 @@
 ﻿using Rodjenihm.Lib.Combinatorics;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace Rodjenihm.Lib.MojBroj
@@ -11,19 +10,18 @@ namespace Rodjenihm.Lib.MojBroj
         private IRpnMap rpnMap = new RpnMap(6);
         private volatile bool solved = false;
         private int target;
-        private readonly int[] opsId = new int[] { 0, 1, 2, 3 };
+        private readonly int[] opIds = new int[] { 0, 1, 2, 3 };
         private readonly char[] ops = new char[] { '*', '+', '-', '/' };
 
         public string Solution { get; private set; }
-        public List<IEnumerable<int[]>> Map { get => rpnMap.Patterns; }
 
         public MojBrojSolver()
         {
         }
 
-        private int Calc(int x, int y, int op)
+        private int Calc(int x, int y, int opId)
         {
-            switch (op)
+            switch (opId)
             {
                 case 0:
                     return x * y;
@@ -37,21 +35,21 @@ namespace Rodjenihm.Lib.MojBroj
                     break;
             }
 
-            throw new InvalidOperationException(nameof(op));
+            throw new InvalidOperationException(nameof(opId));
         }
 
-        private string CreatePostfixFromStacks(int[] numbers, List<int> ops, int[] pattern)
+        private string CreatePostfixFromStacks(int[] numbers, int[] opIds, int stoIdx, int[] pattern)
         {
             string output = string.Empty;
-            var n = 0;
-            var o = 0;
+            var i = 0;
+            var j = 0;
 
             foreach (var token in pattern)
             {
                 if (token == 1)
-                    output += numbers[n++] + " ";
+                    output += numbers[i++] + " ";
                 else
-                    output += this.ops[ops[o++]] + " ";
+                    output += ops[opIds[j++]] + " ";
             }
 
             return output;
@@ -85,53 +83,57 @@ namespace Rodjenihm.Lib.MojBroj
             return st.Count == 1 ? st.Pop() : "Invalid postfix expression!";
         }
 
-        private void SolveBranch(int[] numbers, int n, int[] pattern, int p, int result, Stack<int> st, List<int> opss)
+        private void SolveBranch(int[] numbers, int nIdx, int[] pattern, int pIdx, int result, int[] stn, int stnIdx, int[] sto, int stoIdx)
         {
             if (solved)
                 return;
 
-            if (p < pattern.Length)
-            {
-                if (pattern[p] == 1)
-                {
-                    st.Push(numbers[n]);
-                    SolveBranch(numbers, n + 1, pattern, p + 1, result, new Stack<int>(st.Reverse()), new List<int>(opss));
-                }
-                else
-                {
-                    foreach (var opId in opsId)
-                    {
-                        int y = st.Pop();
-                        int x = st.Pop();
-
-                        if (opId == 3 && y == 0)
-                            continue;
-
-                        //if (op == '-' && x <= y)
-                        //    continue;
-
-                        //if (op == '+' && x > y)
-                        //    continue;
-
-                        result = Calc(x, y, opId);
-                        st.Push(result);
-                        opss.Add(opId);
-                        SolveBranch(numbers, n, pattern, p + 1, result, new Stack<int>(st.Reverse()), new List<int>(opss));
-                        opss.RemoveAt(opss.Count - 1);
-                        st.Pop();
-                        st.Push(x);
-                        st.Push(y);
-                    }
-                }
-            }
-            else
+            if (pIdx == pattern.Length)
             {
                 if (result == target)
                 {
-                    Solution = ConvertPostfixToInfix(CreatePostfixFromStacks(numbers, opss, pattern));
                     solved = true;
+                    Solution = ConvertPostfixToInfix(CreatePostfixFromStacks(numbers, sto, stoIdx, pattern));
                 }
+
+                return;
             }
+
+            while (pattern[pIdx] == 1)
+            {
+                stn[stnIdx++] = numbers[nIdx++];
+                pIdx++;
+            }
+
+            foreach (var opId in opIds)
+            {
+                int right = stn[stnIdx - 1];
+                int left = stn[stnIdx - 2];
+
+                if (opId == 1 && (left == 1 || right == 1))
+                    continue;
+
+                if (opId == 2 && left <= right)
+                    continue;
+
+                if (opId == 3 && right == 0)
+                    continue;
+
+                if (opId == 3 && left % right != 0)
+                    continue;
+
+                result = Calc(left, right, opId);
+                stn[stnIdx-- - 2] = result;
+                sto[stoIdx++] = opId;
+
+                SolveBranch(numbers, nIdx, pattern, pIdx + 1, result, stn, stnIdx, sto, stoIdx);
+
+                stnIdx++;
+                stn[stnIdx - 1] = right;
+                stn[stnIdx - 2] = left;
+                stoIdx--;
+            }
+
         }
 
         public void Solve(IEnumerable<int> numbers, int target)
@@ -157,7 +159,7 @@ namespace Rodjenihm.Lib.MojBroj
                     {
                         foreach (var pattern in rpnMap[i])
                         {
-                            SolveBranch(variation.ToArray(), 0, pattern, 0, 0, new Stack<int>(i), new List<int>(i - 1));
+                            SolveBranch(variation.ToArray(), 0, pattern, 0, 0, new int[i], 0, new int[i - 1], 0);
                         }
                     }
                 }
