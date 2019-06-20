@@ -8,6 +8,7 @@ namespace Rodjenihm.Lib.MojBroj
     internal sealed class RpnMap : IRpnMap
     {
         public List<IEnumerable<int[]>> Patterns { get; private set; }
+        public int Size { get => Patterns.Count; }
 
         public RpnMap(int maxDigitCount)
         {
