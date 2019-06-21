@@ -11,7 +11,7 @@ namespace Rodjenihm.Lib.MojBroj
         private volatile bool solved = false;
         private int target;
         private readonly int[] opIds = new int[] { 0, 1, 2, 3 };
-        private readonly char[] ops = new char[] { '*', '+', '-', '/' };
+        private readonly string[] ops = new string[] { "*", "+", "-", "/" };
 
         public string Solution { get; private set; }
 
@@ -65,7 +65,7 @@ namespace Rodjenihm.Lib.MojBroj
                 if (item == "")
                     continue;
 
-                if (item == "*" || item == "+" || item == "-" || item == "/")
+                if (ops.Contains(item))
                 {
                     if (st.Count < 2)
                         return "Invalid postfix expression!";
@@ -105,11 +105,11 @@ namespace Rodjenihm.Lib.MojBroj
                 pIdx++;
             }
 
+            int right = stn[stnIdx - 1];
+            int left = stn[stnIdx - 2];
+
             foreach (var opId in opIds)
             {
-                int right = stn[stnIdx - 1];
-                int left = stn[stnIdx - 2];
-
                 if (opId == 1 && (left == 1 || right == 1))
                     continue;
 
@@ -120,6 +120,9 @@ namespace Rodjenihm.Lib.MojBroj
                     continue;
 
                 if (opId == 3 && left % right != 0)
+                    continue;
+
+                if (opId == 3 && right == 1)
                     continue;
 
                 result = Calc(left, right, opId);
@@ -144,11 +147,8 @@ namespace Rodjenihm.Lib.MojBroj
             if (numbers.Count() != rpnMap.Size + 1)
                 rpnMap = new RpnMap(numbers.Count());
 
-            for (int i = 2; i <= numbers.Count(); i++)
+            for (int i = 2; i <= numbers.Count() && !solved; i++)
             {
-                if (solved)
-                    return;
-
                 var combinations = new Combinations<int>(numbers, i);
 
                 foreach (var combination in combinations)
