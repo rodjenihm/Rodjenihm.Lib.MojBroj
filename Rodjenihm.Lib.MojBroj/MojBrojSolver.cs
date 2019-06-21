@@ -11,9 +11,8 @@ namespace Rodjenihm.Lib.MojBroj
         private volatile bool solved = false;
         private int target;
         private readonly int[] opIds = new int[] { 0, 1, 2, 3 };
-        private readonly string[] ops = new string[] { "*", "+", "-", "/" };
 
-        public string Solution { get; private set; }
+        public Solution Solution { get; private set; }
 
         public MojBrojSolver()
         {
@@ -38,52 +37,7 @@ namespace Rodjenihm.Lib.MojBroj
             throw new InvalidOperationException(nameof(opId));
         }
 
-        private string CreatePostfixFromStacks(int[] numbers, int[] opIds, int stoIdx, int[] pattern)
-        {
-            string output = string.Empty;
-            var i = 0;
-            var j = 0;
-
-            foreach (var token in pattern)
-            {
-                if (token == 1)
-                    output += numbers[i++] + " ";
-                else
-                    output += ops[opIds[j++]] + " ";
-            }
-
-            return output;
-        }
-
-        private string ConvertPostfixToInfix(string postfix)
-        {
-            var split = postfix.Split(' ');
-            var st = new Stack<string>();
-
-            foreach (var item in split)
-            {
-                if (item == "")
-                    continue;
-
-                if (ops.Contains(item))
-                {
-                    if (st.Count < 2)
-                        return "Invalid postfix expression!";
-
-                    var right = st.Pop();
-                    var left = st.Pop();
-                    st.Push($"({left} {item} {right})");
-                }
-                else
-                {
-                    st.Push(item.ToString());
-                }
-            }
-
-            return st.Count == 1 ? st.Pop() : "Invalid postfix expression!";
-        }
-
-        private void SolveBranch(int[] numbers, int nIdx, int[] pattern, int pIdx, int result, int[] stn, int stnIdx, int[] sto, int stoIdx)
+        private void SolveBranch(int[] numbers, int nIdx, int[] pattern, int pIdx, int result, int[] stNumbers, int stnIdx, int[] stOperators, int stoIdx)
         {
             if (solved)
                 return;
@@ -93,7 +47,7 @@ namespace Rodjenihm.Lib.MojBroj
                 if (result == target)
                 {
                     solved = true;
-                    Solution = ConvertPostfixToInfix(CreatePostfixFromStacks(numbers, sto, stoIdx, pattern));
+                    Solution = new Solution(target, numbers, stOperators, pattern);
                 }
 
                 return;
@@ -101,16 +55,16 @@ namespace Rodjenihm.Lib.MojBroj
 
             while (pattern[pIdx] == 1)
             {
-                stn[stnIdx++] = numbers[nIdx++];
+                stNumbers[stnIdx++] = numbers[nIdx++];
                 pIdx++;
             }
 
-            int right = stn[stnIdx - 1];
-            int left = stn[stnIdx - 2];
+            int right = stNumbers[stnIdx - 1];
+            int left = stNumbers[stnIdx - 2];
 
             foreach (var opId in opIds)
             {
-                if (opId == 1 && (left == 1 || right == 1))
+                if (opId == 0 && (left == 1 || right == 1))
                     continue;
 
                 if (opId == 2 && left <= right)
@@ -126,19 +80,18 @@ namespace Rodjenihm.Lib.MojBroj
                     continue;
 
                 result = Calc(left, right, opId);
-                stn[stnIdx-- - 2] = result;
-                sto[stoIdx++] = opId;
+                stNumbers[stnIdx-- - 2] = result;
+                stOperators[stoIdx++] = opId;
 
-                SolveBranch(numbers, nIdx, pattern, pIdx + 1, result, stn, stnIdx, sto, stoIdx);
+                SolveBranch(numbers, nIdx, pattern, pIdx + 1, result, stNumbers, stnIdx, stOperators, stoIdx);
 
                 stnIdx++;
-                stn[stnIdx - 1] = right;
-                stn[stnIdx - 2] = left;
+                stNumbers[stnIdx - 1] = right;
+                stNumbers[stnIdx - 2] = left;
                 stoIdx--;
             }
 
         }
-
         public void Solve(IEnumerable<int> numbers, int target)
         {
             solved = false;
@@ -163,6 +116,12 @@ namespace Rodjenihm.Lib.MojBroj
                         }
                     }
                 }
+            }
+
+            if (!solved)
+            {
+                Solution = new Solution();
+                Solution.Postfix = Solution.Infix = "Couln't find solution!";
             }
         }
     }
