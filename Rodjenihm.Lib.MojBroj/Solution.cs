@@ -46,32 +46,55 @@ namespace Rodjenihm.Lib.MojBroj
             return output;
         }
 
+        private int GetPrecedence(string op)
+        {
+            switch (op)
+            {
+                default:
+                    return 3;
+
+                case "*":
+                case "/":
+                    return 2;
+
+                case "+":
+                case "-":
+                    return 1;
+            }
+        }
+
         private string ConvertPostfixToInfix()
         {
-            var split = Postfix.Split(' ');
-            var st = new Stack<string>();
+            var split = Postfix.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var st = new Stack<(string expression, int precedence)>();
 
             foreach (var item in split)
             {
-                if (item == "")
-                    continue;
-
                 if (ops.Contains(item))
                 {
                     if (st.Count < 2)
                         return "Invalid postfix expression!";
 
-                    var right = st.Pop();
-                    var left = st.Pop();
-                    st.Push($"({left} {item} {right})");
+                    var (rightExpression, rightPrecedence) = st.Pop();
+                    var (leftExpression, leftPrecedence) = st.Pop();
+
+                    var newPrecedence = GetPrecedence(item);
+
+                    if (newPrecedence > rightPrecedence)
+                        rightExpression = $"({rightExpression})";
+
+                    if (newPrecedence > leftPrecedence)
+                        leftExpression = $"({leftExpression})";
+
+                    st.Push(($"{leftExpression} {item} {rightExpression}", GetPrecedence(item)));
                 }
                 else
                 {
-                    st.Push(item.ToString());
+                    st.Push((item, 3));
                 }
             }
 
-            return st.Count == 1 ? st.Pop() : "Invalid postfix expression!";
+            return st.Count == 1 ? st.Pop().expression : "Invalid postfix expression!";
         }
     }
 }

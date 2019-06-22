@@ -64,6 +64,7 @@ namespace Rodjenihm.Lib.MojBroj
 
             foreach (var opId in opIds)
             {
+                // Improvement needed
                 if (opId == 0 && (left == 1 || right == 1))
                     continue;
 
@@ -78,6 +79,7 @@ namespace Rodjenihm.Lib.MojBroj
 
                 if (opId == 3 && right == 1)
                     continue;
+                //
 
                 result = Calc(left, right, opId);
                 stNumbers[stnIdx-- - 2] = result;
