@@ -10,9 +10,9 @@ namespace Rodjenihm.Lib.MojBroj
         private readonly ISolverEngine solverEngine;
         private IRpnMap rpnMap = new RpnMap(6);
 
-        public MojBrojSolver()
+        public MojBrojSolver(ISolverEngine solverEngine)
         {
-            solverEngine = new SolverEngine();
+            this.solverEngine = solverEngine;
         }
 
         public IEnumerable<Solution> Solve(IEnumerable<int> numbers, int target)

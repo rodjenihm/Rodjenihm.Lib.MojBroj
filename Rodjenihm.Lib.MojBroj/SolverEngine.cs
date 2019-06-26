@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Rodjenihm.Lib.MojBroj
 {
-    internal class SolverEngine : ISolverEngine
+    public class SolverEngine : ISolverEngine
     {
         private readonly int[] opIds = new int[] { 0, 1, 2, 3 };
         private int target;
