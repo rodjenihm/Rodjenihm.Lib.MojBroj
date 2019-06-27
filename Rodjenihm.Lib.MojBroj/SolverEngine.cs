@@ -2,11 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Rodjenihm.Lib.MojBroj
 {
-    public class SolverEngine : ISolverEngine
+    public sealed class SolverEngine : ISolverEngine
     {
         private readonly int[] opIds = new int[] { 0, 1, 2, 3 };
         private int target;
@@ -78,7 +77,6 @@ namespace Rodjenihm.Lib.MojBroj
                     stoIdx--;
                 }
             }
-
         }
 
         public IEnumerable<Solution> Solve(IEnumerable<int> numbers, int target, IRpnMap rpnMap)
@@ -97,8 +95,8 @@ namespace Rodjenihm.Lib.MojBroj
                     {
                         foreach (var pattern in rpnMap[i])
                         {
-                            foreach (var solution in SolveBranch(variation.ToArray(), 0, pattern, 0, 0, new int[i], 0, new int[i - 1], 0))
-                                yield return solution;
+                            foreach (var branch in SolveBranch(variation.ToArray(), 0, pattern, 0, 0, new int[i], 0, new int[i - 1], 0))
+                                yield return branch;
                         }
                     }
                 }

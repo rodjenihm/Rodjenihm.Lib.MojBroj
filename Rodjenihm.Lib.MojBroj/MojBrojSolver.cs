@@ -1,11 +1,9 @@
-﻿using Rodjenihm.Lib.Combinatorics;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Rodjenihm.Lib.MojBroj
 {
-    public class MojBrojSolver
+    public sealed class MojBrojSolver
     {
         private readonly ISolverEngine solverEngine;
         private IRpnMap rpnMap = new RpnMap(6);

@@ -6,10 +6,9 @@ namespace Rodjenihm.Lib.MojBroj
 {
     public sealed class Solution
     {
-        private int value;
-        private int[] numbers;
-        private int[] stOperators;
-        private int[] pattern;
+        private readonly int[] numbers;
+        private readonly int[] stOperators;
+        private readonly int[] pattern;
         private readonly string[] ops = new string[] { "*", "+", "-", "/" };
 
         public string Postfix { get; internal set; }
@@ -21,7 +20,6 @@ namespace Rodjenihm.Lib.MojBroj
 
         internal Solution(int value, int[] numbers, int[] stOperators, int[] pattern)
         {
-            this.value = value;
             this.numbers = numbers ?? throw new ArgumentNullException(nameof(numbers));
             this.stOperators = stOperators ?? throw new ArgumentNullException(nameof(stOperators));
             this.pattern = pattern ?? throw new ArgumentNullException(nameof(pattern));
