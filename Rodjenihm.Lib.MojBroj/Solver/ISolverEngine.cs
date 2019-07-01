@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Rodjenihm.Lib.MojBroj
+namespace Rodjenihm.Lib.MojBroj.Solver
 {
     public interface ISolverEngine
     {

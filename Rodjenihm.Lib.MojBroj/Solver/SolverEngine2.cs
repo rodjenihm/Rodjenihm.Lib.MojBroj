@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rodjenihm.Lib.MojBroj
+namespace Rodjenihm.Lib.MojBroj.Solver
 {
     public sealed class SolverEngine2 : ISolverEngine
     {

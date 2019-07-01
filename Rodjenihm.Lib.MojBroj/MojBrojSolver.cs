@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Rodjenihm.Lib.MojBroj.Solver;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Rodjenihm.Lib.MojBroj
