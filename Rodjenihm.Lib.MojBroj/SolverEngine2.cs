@@ -41,8 +41,7 @@ namespace Rodjenihm.Lib.MojBroj
                 pushed++;
                 pIdx++;
             }
-            bool notSimple = pushed < 2;
-            bool simple = !notSimple;
+            bool simple = pushed > 1;
 
             int right = stNumbers[stnIdx - 1];
             int left = stNumbers[stnIdx - 2];
@@ -65,6 +64,8 @@ namespace Rodjenihm.Lib.MojBroj
 
                 if (pIdx == pattern.Length - 1)
                 {
+                    stOperators[stoIdx] = opId;
+
                     if (result == target)
                     {
                         yield return new Solution(target, variation, stOperators, pattern);

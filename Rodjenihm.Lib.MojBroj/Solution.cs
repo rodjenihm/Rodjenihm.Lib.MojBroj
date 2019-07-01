@@ -9,7 +9,7 @@ namespace Rodjenihm.Lib.MojBroj
         private readonly int[] numbers;
         private readonly int[] stOperators;
         private readonly int[] pattern;
-        private readonly string[] ops = new string[] { "*", "+", "-", "/" };
+        private readonly string[] operators = new string[] { "*", "+", "-", "/" };
 
         public string Postfix { get; internal set; }
         public string Infix { get; internal set; }
@@ -38,61 +38,52 @@ namespace Rodjenihm.Lib.MojBroj
                 if (token == 1)
                     output += numbers[i++] + " ";
                 else
-                    output += ops[stOperators[j++]] + " ";
+                    output += operators[stOperators[j++]] + " ";
             }
 
             return output;
         }
 
-        private int GetPrecedence(string op)
-        {
-            switch (op)
-            {
-                default:
-                    return 3;
-
-                case "*":
-                case "/":
-                    return 2;
-
-                case "+":
-                case "-":
-                    return 1;
-            }
-        }
-
         private string ConvertPostfixToInfix()
         {
-            var split = Postfix.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            var st = new Stack<(string expression, int precedence)>();
+            var stack = new Stack<(string expression, int operatorPrecedence)>();
 
-            foreach (var item in split)
+            foreach (var item in Postfix.Split(' '))
             {
-                if (ops.Contains(item))
+                if (int.TryParse(item, out int temp))
                 {
-                    if (st.Count < 2)
-                        return "Invalid postfix expression!";
+                    stack.Push((item, 3));
+                }
+                else if (operators.Contains(item))
+                {
+                    if (stack.Count < 2)
+                        return "Invalid postfix expression";
 
-                    var (rightExpression, rightPrecedence) = st.Pop();
-                    var (leftExpression, leftPrecedence) = st.Pop();
+                    (var rightExpression, var rightOperatorPrecedence) = stack.Pop();
+                    (var leftExpression, var leftOperatorPrecedence) = stack.Pop();
+                    var rootOperatorPrecedence = (item == "*" || item == "/") ? 2 : 1;
 
-                    var newPrecedence = GetPrecedence(item);
+                    if (leftOperatorPrecedence < rootOperatorPrecedence)
+                    {
+                        leftExpression = $"({leftExpression})";
+                    }
 
-                    if (newPrecedence > rightPrecedence)
+                    if (rightOperatorPrecedence < rootOperatorPrecedence)
+                    {
                         rightExpression = $"({rightExpression})";
 
-                    if (newPrecedence > leftPrecedence)
-                        leftExpression = $"({leftExpression})";
+                    }
 
-                    st.Push(($"{leftExpression} {item} {rightExpression}", GetPrecedence(item)));
-                }
-                else
-                {
-                    st.Push((item, 3));
+                    if ((rightOperatorPrecedence == rootOperatorPrecedence) && (item == "-" || item == "/"))
+                    {
+                        rightExpression = $"({rightExpression})";
+                    }
+
+                    stack.Push((leftExpression + item + rightExpression, rootOperatorPrecedence));
                 }
             }
 
-            return st.Count == 1 ? st.Pop().expression : "Invalid postfix expression!";
+            return stack.Count != 1 ? "Invalid postfix expression" : stack.Pop().expression;
         }
     }
 }
