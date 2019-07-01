@@ -7,7 +7,9 @@ Biblioteka za rešavanje popularne igre "Moj Broj" napisana u programskom jeziku
 
 6.26.2019 - Novi dizajn i funkcionalnost. MojBrojSolver sada ima mogućnost da pronalazi sva rešenja.  
 
-6.27.2019 - Implementiran SolverEngine2. I do tri puta brži zahvaljujući pametnijoj eliminaciji suvišnih proračuna.
+6.27.2019 - Implementiran SolverEngine2. I do tri puta brži zahvaljujući pametnijoj eliminaciji suvišnih proračuna.  
+
+7.1.2019 - SolverEngine3. 
 
 Primer:  
 ```csharp
