@@ -39,7 +39,7 @@ namespace Rodjenihm.Lib.MojBroj
                 else if (operators.Contains(item))
                 {
                     if (stack.Count < 2)
-                        return "Invalid postfix expression";
+                        throw new ArgumentException("Invalid postfix expression", nameof(postfix));
 
                     (var rightExpression, var rightOperatorPrecedence) = stack.Pop();
                     (var leftExpression, var leftOperatorPrecedence) = stack.Pop();
@@ -65,7 +65,24 @@ namespace Rodjenihm.Lib.MojBroj
                 }
             }
 
-            return stack.Count != 1 ? "Invalid postfix expression" : stack.Pop().expression;
+            return stack.Count != 1 ? throw new ArgumentException("Invalid postfix expression", nameof(postfix)) : stack.Pop().expression;
+        }
+
+        public static bool TryConvertPostfixToInfix(string postfix, out string infix)
+        {
+            infix = string.Empty;
+            var success = true;
+
+            try
+            {
+                infix = ConvertInfixToPostfix(postfix);
+            }
+            catch
+            {
+                success = false;
+            }
+
+            return success;
         }
 
         public static string ConvertInfixToPostfix(string infix)
