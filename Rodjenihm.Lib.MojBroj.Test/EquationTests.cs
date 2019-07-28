@@ -29,5 +29,16 @@ namespace Rodjenihm.Lib.MojBroj.Test
         {
             Assert.Throws<ArgumentException>(() => Equation.ConvertPostfixToInfix(postfix));
         }
+
+        [Test]
+        [TestCase("4+3", "4 3 +")]
+        [TestCase("3+2*(5-2)", "3 2 5 2 - * +")]
+        [TestCase("114-32*(4+5)-3", "114 32 4 5 + * - 3 -")]
+        public void ConvertInfixToPostfix_ValidInfixInput_OutputsPostfix(string infix, string expected)
+        {
+            var actual = Equation.ConvertInfixToPostfix(infix);
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

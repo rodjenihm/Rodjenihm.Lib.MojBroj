@@ -21,7 +21,7 @@ namespace Rodjenihm.Lib.MojBroj
                 case '/':
                     return 2;
             }
-            throw new ArgumentException("Operator is not valid", nameof(@operator));
+            return -1;
         }
 
         internal static string CreatePostfixFromStacks(int[] numbers, int[] stOperators, int[] pattern)
@@ -133,7 +133,7 @@ namespace Rodjenihm.Lib.MojBroj
 
                         if (stack.Count > 0 && stack.Peek() != '(')
                         {
-                            return "Invalid Expression";
+                            throw new ArgumentException("Invalid infix expression", nameof(infix));
                         }
                         else
                         {
@@ -153,6 +153,11 @@ namespace Rodjenihm.Lib.MojBroj
                 }
             }
 
+            while (stack.Count > 1)
+            {
+                postfix += $"{stack.Pop()} ";
+            }
+            postfix += stack.Pop();
             return postfix;
         }
 
