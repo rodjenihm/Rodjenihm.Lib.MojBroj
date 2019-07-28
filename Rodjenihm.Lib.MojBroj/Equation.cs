@@ -168,7 +168,7 @@ namespace Rodjenihm.Lib.MojBroj
 
             try
             {
-                postfix = ConvertInfixToPostfix(postfix);
+                postfix = ConvertInfixToPostfix(infix);
             }
             catch
             {
