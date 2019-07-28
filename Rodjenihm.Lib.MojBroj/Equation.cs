@@ -177,5 +177,66 @@ namespace Rodjenihm.Lib.MojBroj
 
             return success;
         }
+
+        public static int EvaluatePostfixExpression(string postfix)
+        {
+            var stack = new Stack<int>();
+            var split = postfix.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var token in split)
+            {
+                if (int.TryParse(token, out int number))
+                {
+                    stack.Push(number);
+                }
+                else if (operators.Contains(token))
+                {
+                    int right = stack.Pop();
+                    int left = stack.Pop();
+                    int result = 0;
+
+                    switch (token)
+                    {
+                        case "*":
+                            result = left * right;
+                            break;
+                        case "+":
+                            result = left + right;
+                            break;
+                        case "-":
+                            result = left - right;
+                            break;
+                        case "/":
+                            result = left / right;
+                            break;
+                    }
+
+                    stack.Push(result);
+                }
+                else
+                {
+                    throw new ArgumentException();
+                }
+            }
+
+            return stack.Count == 1 ? stack.Pop() : throw new ArgumentException();
+        }
+
+        public static bool TryEvaluatePostfixExpression(string postfix, out int value)
+        {
+            value = 0;
+            var success = true;
+
+            try
+            {
+                value = EvaluatePostfixExpression(postfix);
+            }
+            catch
+            {
+                success = false;
+            }
+
+            return success;
+        }
     }
 }

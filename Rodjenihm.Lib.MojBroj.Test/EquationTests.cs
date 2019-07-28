@@ -40,5 +40,16 @@ namespace Rodjenihm.Lib.MojBroj.Test
 
             Assert.AreEqual(expected, actual);
         }
+
+        [Test]
+        [TestCase("4 3 +", 7)]
+        [TestCase("3 5 2 + *", 21)]
+        [TestCase("114 32 4 5 + * - 3 -", -177)]
+        public void EvaluatePostfixExpression_ValidPostfixExpression_ReturnsValue(string postfix, int expected)
+        {
+            var actual = Equation.EvaluatePostfixExpression(postfix);
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 }
