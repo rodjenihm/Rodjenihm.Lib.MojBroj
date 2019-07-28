@@ -9,6 +9,21 @@ namespace Rodjenihm.Lib.MojBroj
     {
         private static readonly string[] operators = new string[] { "*", "+", "-", "/" };
 
+        internal static int Precedence(char @operator)
+        {
+            switch (@operator)
+            {
+                case '+':
+                case '-':
+                    return 1;
+
+                case '*':
+                case '/':
+                    return 2;
+            }
+            throw new ArgumentException("Operator is not valid", nameof(@operator));
+        }
+
         internal static string CreatePostfixFromStacks(int[] numbers, int[] stOperators, int[] pattern)
         {
             string output = string.Empty;
@@ -75,7 +90,7 @@ namespace Rodjenihm.Lib.MojBroj
 
             try
             {
-                infix = ConvertInfixToPostfix(postfix);
+                infix = ConvertPostfixToInfix(postfix);
             }
             catch
             {
@@ -87,7 +102,75 @@ namespace Rodjenihm.Lib.MojBroj
 
         public static string ConvertInfixToPostfix(string infix)
         {
-            return infix;
+            var postfix = string.Empty;
+            var stack = new Stack<char>();
+
+            int i = 0;
+            while (i < infix.Length)
+            {
+                var token = infix[i];
+                if (char.IsLetterOrDigit(token))
+                {
+                    var number = string.Empty;
+                    while (i < infix.Length && char.IsLetterOrDigit(infix[i]))
+                    {
+                        number += infix[i++];
+                    }
+                    postfix += $"{number} ";
+                }
+                else
+                {
+                    if (token == '(')
+                    {
+                        stack.Push(token);
+                    }
+                    else if (token == ')')
+                    {
+                        while (stack.Count > 0 && stack.Peek() != '(')
+                        {
+                            postfix += stack.Pop() + " ";
+                        }
+
+                        if (stack.Count > 0 && stack.Peek() != '(')
+                        {
+                            return "Invalid Expression";
+                        }
+                        else
+                        {
+                            stack.Pop();
+                        }
+                    }
+                    else if (operators.Contains(token.ToString()))
+                    {
+                        while (stack.Count > 0 && Precedence(token) <= Precedence(stack.Peek()))
+                        {
+                            postfix += stack.Pop() + " ";
+                        }
+
+                        stack.Push(token);
+                    }
+                    i++;
+                }
+            }
+
+            return postfix;
+        }
+
+        public static bool TryConvertInfixToPostfix(string infix, out string postfix)
+        {
+            postfix = string.Empty;
+            var success = true;
+
+            try
+            {
+                postfix = ConvertInfixToPostfix(postfix);
+            }
+            catch
+            {
+                success = false;
+            }
+
+            return success;
         }
     }
 }
