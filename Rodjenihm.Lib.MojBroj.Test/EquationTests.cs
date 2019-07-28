@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 
 namespace Rodjenihm.Lib.MojBroj.Test
 {
@@ -10,9 +11,23 @@ namespace Rodjenihm.Lib.MojBroj.Test
         }
 
         [Test]
-        public void Test1()
+        [TestCase("4 3 +", "4+3")]
+        [TestCase("3 2 1 + *", "3*(2+1)")]
+        [TestCase("3 2 + 4 -", "3+2-4")]
+        public void ConvertPostfixToInfix_ValidPostfixInput_OutputsInfix(string postfix, string expected)
         {
-            Assert.Pass();
+            var actual = Equation.ConvertPostfixToInfix(postfix);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [TestCase("+ * 3")]
+        [TestCase("3 4 + *")]
+        [TestCase("3 + 5 *")]
+        public void ConvertPostfixToInfix_InvalidPostfixInput_ThrowsArgumentException(string postfix)
+        {
+            Assert.Throws<ArgumentException>(() => Equation.ConvertPostfixToInfix(postfix));
         }
     }
 }
