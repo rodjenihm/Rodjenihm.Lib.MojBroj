@@ -50,5 +50,6 @@ Primer:
     var solutions2 = mbSolver2.Solve(numbers: new int[] { 1, 5, 8, 2, 10, 50 }, target: 872).ToList();
     stopwatch.Stop();
     Console.WriteLine($"Broj resenja: {solutions2.Count} ; Vreme: {stopwatch.ElapsedMilliseconds}");
-``` 
+```   
+In progress...
 
