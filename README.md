@@ -51,5 +51,5 @@ Primer:
     stopwatch.Stop();
     Console.WriteLine($"Broj resenja: {solutions2.Count} ; Vreme: {stopwatch.ElapsedMilliseconds}");
 ```   
-In progress...
+In progress, will be improved in the future...
 
